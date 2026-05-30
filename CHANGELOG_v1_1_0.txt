@@ -1,0 +1,10 @@
+# CHANGELOG v1.1.0
+
+- Render前提を廃止し、GitHubプライベートリポジトリ管理 + PCローカル起動前提に変更。
+- render.yamlを削除。
+- READMEをGitHubプライベートリポジトリ運用手順へ更新。
+- PCでlocalhostを開いた場合でも、QRコード/共有URLにLAN用URLを優先できるよう改善。
+- /api/config に accessUrls 情報を追加。
+- PUBLIC_BASE_URL 環境変数を追加し、一時トンネルURLをQRコード/共有URLへ反映できるよう対応。
+- トップ画面の説明文をGitHubプライベートリポジトリ版に変更。
+- 写真はGitHubに保存せずPC内dataフォルダへ一時保存する方針を明記。

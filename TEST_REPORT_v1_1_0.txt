@@ -1,0 +1,26 @@
+# TEST_REPORT v1.1.0
+
+## 実施済み
+
+- server.js の構文確認: OK
+- public/app.js の構文確認: OK
+- package.json のJSON妥当性確認: OK
+- scripts/print_network_urls.js の実行確認: OK
+- start_windows.bat のCRLF改行確認: OK
+- diagnose_windows.bat のCRLF改行確認: OK
+- render.yaml が成果物から削除されていることを確認: OK
+- README.md がGitHubプライベートリポジトリ運用前提へ更新されていることを確認: OK
+- .gitignore に data/ node_modules/ .env が含まれていることを確認: OK
+
+## 未実施
+
+- npm install による依存関係取得
+- 実際の node server.js 起動
+- ブラウザ画面操作
+- iPhone実機からのアップロード
+- GitHubプライベートリポジトリへの実アップロード/Clone
+- Cloudflare Tunnel等での外部公開URL接続
+
+## 補足
+
+この実行環境では外部ネットワークと実機iPhoneを使った検証ができないため、実機操作系は未実施です。
