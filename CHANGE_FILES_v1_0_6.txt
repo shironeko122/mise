@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>スパルタクス v1.0.6</title>
+<style>
+:root{
+  --bg:#180d0a;
+  --panel:#2b1711e8;
+  --panel2:#3a2119e8;
+  --gold:#e7bd68;
+  --gold2:#f7d993;
+  --red:#b84638;
+  --ink:#f9ead0;
+  --muted:#cdbb95;
+  --line:#7f5535;
+  --green:#50b06f;
+  --blue:#5ca2d8;
+  --shadow: 0 18px 48px rgba(0,0,0,.38);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  color:var(--ink);
+  font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(236,177,84,.36), transparent 32%),
+    radial-gradient(circle at 18% 15%, rgba(137,32,24,.45), transparent 30%),
+    linear-gradient(135deg, rgba(0,0,0,.08) 25%, transparent 25%) 0 0/34px 34px,
+    linear-gradient(225deg, rgba(255,255,255,.04) 25%, transparent 25%) 0 0/34px 34px,
+    linear-gradient(160deg,#120805,#28120c 42%,#4a2013 100%);
+  overflow-x:hidden;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;
+  background:
+    linear-gradient(90deg, transparent 0 8%, rgba(255,225,160,.32) 8% 9%, transparent 9% 17%, rgba(255,225,160,.28) 17% 18%, transparent 18% 100%),
+    radial-gradient(ellipse at 50% 120%, rgba(255,223,145,.25), transparent 45%);
+  mix-blend-mode:screen;
+}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0}
+button:disabled{cursor:not-allowed;filter:grayscale(.65);opacity:.45}
+.app{width:min(1280px,96vw);margin:0 auto;padding:20px 0 42px;position:relative;z-index:1}
+.hero{
+  min-height:160px;border:1px solid rgba(231,189,104,.35);border-radius:28px;padding:24px;
+  background:
+    linear-gradient(120deg, rgba(40,20,12,.95), rgba(102,40,24,.78)),
+    repeating-linear-gradient(90deg, rgba(231,189,104,.08) 0 2px, transparent 2px 82px);
+  box-shadow:var(--shadow);position:relative;overflow:hidden;
+}
+.hero:after{
+  content:"SPARTACVS";position:absolute;right:20px;bottom:-24px;font-family:Georgia,serif;font-size:82px;letter-spacing:.08em;color:rgba(255,226,160,.08);font-weight:bold;
+}
+.title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+h1{font-family:Georgia,"Times New Roman",serif;margin:0;font-size:clamp(36px,5vw,64px);line-height:.92;color:var(--gold2);text-shadow:0 3px 0 rgba(0,0,0,.45)}
+.sub{margin:12px 0 0;color:var(--muted);max-width:760px;line-height:1.75}.version{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(231,189,104,.38);background:rgba(0,0,0,.18);border-radius:999px;padding:8px 12px;color:var(--gold2);font-weight:700}.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:rgba(231,189,104,.13);border:1px solid rgba(231,189,104,.28);padding:6px 10px;color:var(--gold2);font-weight:700}.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin-top:16px}.panel{background:var(--panel);border:1px solid rgba(231,189,104,.26);border-radius:24px;padding:16px;box-shadow:var(--shadow);backdrop-filter: blur(4px)}.panel h2,.panel h3{font-family:Georgia,"Yu Gothic UI",serif;color:var(--gold2);margin:0 0 10px}.setup-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.field{display:flex;flex-direction:column;gap:6px;color:var(--muted);font-weight:700}.field input,.field select{background:#130906;color:var(--ink);border:1px solid rgba(231,189,104,.28);border-radius:14px;padding:10px 12px;min-width:120px}.player-name-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:14px}.primary,.secondary,.danger,.ghost{border-radius:16px;padding:11px 16px;color:#1f1009;font-weight:800;box-shadow:0 8px 18px rgba(0,0,0,.24);transition:.15s transform,.15s filter}.primary{background:linear-gradient(180deg,#ffe6a3,#d9a84e)}.secondary{background:linear-gradient(180deg,#bce8ff,#5ca2d8)}.danger{background:linear-gradient(180deg,#ffc4b9,#c34a38)}.ghost{color:var(--gold2);background:rgba(0,0,0,.18);border:1px solid rgba(231,189,104,.35)}.primary:hover,.secondary:hover,.danger:hover,.ghost:hover{transform:translateY(-1px);filter:brightness(1.08)}.status-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:16px}.status-card{border:1px solid rgba(231,189,104,.24);background:rgba(0,0,0,.16);border-radius:18px;padding:12px}.status-label{font-size:12px;color:var(--muted);font-weight:800}.status-value{font-size:21px;font-weight:900;color:var(--gold2);margin-top:2px}.turn-panel{display:grid;grid-template-columns:minmax(260px,1fr) minmax(280px,1.1fr);gap:16px;margin-top:16px}.current-player{border:1px solid rgba(255,230,160,.4);background:linear-gradient(135deg,rgba(92,38,25,.94),rgba(27,13,9,.96));border-radius:22px;padding:16px;position:relative;overflow:hidden}.current-player:before{content:"";position:absolute;inset:auto -30px -70px auto;width:200px;height:200px;border-radius:50%;background:rgba(231,189,104,.1)}.turn-name{font-size:24px;font-weight:900;color:var(--gold2);position:relative}.hint{color:var(--muted);font-size:13px;line-height:1.6}.hand{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}.card{width:64px;min-height:90px;border-radius:14px;border:2px solid rgba(255,238,186,.65);background:linear-gradient(160deg,#f7dfae,#b78243);color:#2c1409;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:950;box-shadow:0 9px 16px rgba(0,0,0,.28);position:relative;transition:.14s transform,.14s filter}.card.small{width:48px;min-height:66px;font-size:16px;border-width:1px}.card .num{font-family:Georgia,serif;font-size:30px;line-height:1}.card .tag{font-size:10px;letter-spacing:.08em}.card.flag{background:linear-gradient(160deg,#48110f,#c44334);color:#fff4d0}.card.legal{box-shadow:0 0 0 3px rgba(80,176,111,.45),0 10px 18px rgba(0,0,0,.3)}.card.lowest{box-shadow:0 0 0 4px rgba(255,227,121,.9),0 14px 22px rgba(0,0,0,.4);transform:translateY(-5px)}button.card:hover:not(:disabled){transform:translateY(-5px) rotate(-1deg);filter:brightness(1.05)}.trick-area{min-height:230px;border-radius:22px;border:1px dashed rgba(231,189,104,.35);background:radial-gradient(ellipse at center,rgba(231,189,104,.14),rgba(0,0,0,.12));padding:16px}.trick-title{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}.played-cards{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-top:14px}.played-wrap{text-align:center}.played-name{font-size:12px;color:var(--muted);margin-top:6px;max-width:90px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.players{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:16px}.player-card{background:rgba(0,0,0,.18);border:1px solid rgba(231,189,104,.22);border-radius:20px;padding:12px;position:relative;overflow:hidden}.player-card.current{border-color:rgba(255,228,135,.9);box-shadow:0 0 0 3px rgba(231,189,104,.16)}.player-card.passed{opacity:.62}.player-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.player-title{font-weight:950;color:var(--gold2)}.token{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.6);display:inline-block;vertical-align:middle;margin-right:6px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.mini-stat{background:rgba(0,0,0,.2);border-radius:12px;padding:8px;text-align:center}.mini-stat b{display:block;color:var(--gold2);font-size:20px}.mini-stat span{font-size:11px;color:var(--muted);font-weight:800}.captured{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.trick-chip{border-radius:999px;border:1px solid rgba(231,189,104,.35);padding:4px 8px;background:rgba(231,189,104,.1);font-size:12px;color:var(--gold2);font-weight:800}.log{max-height:260px;overflow:auto;padding-right:4px}.log-entry{border-bottom:1px solid rgba(231,189,104,.14);padding:8px 0;color:var(--muted);line-height:1.55}.log-entry:first-child{color:var(--ink)}.rule-list{line-height:1.75;color:var(--muted);padding-left:1.2em}.rule-list b{color:var(--gold2)}.footer-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.sound-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.range-row{display:flex;align-items:center;gap:8px}.range-row input{width:100%}.gate{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:160px;text-align:center;border-radius:18px;background:rgba(0,0,0,.22);border:1px dashed rgba(231,189,104,.35);padding:18px}.pass-burst{position:fixed;left:50%;top:20%;transform:translate(-50%,-10px) scale(.96);z-index:45;min-width:min(520px,88vw);text-align:center;border:2px solid rgba(255,226,157,.8);border-radius:24px;background:linear-gradient(160deg,rgba(43,16,9,.96),rgba(119,43,27,.96));box-shadow:0 22px 60px rgba(0,0,0,.52);padding:22px 26px;font-family:Georgia,"Yu Gothic UI",serif;font-size:clamp(28px,5vw,48px);font-weight:950;color:#ffe79c;opacity:0;pointer-events:none;transition:.22s opacity,.22s transform}.pass-burst.show{opacity:1;transform:translate(-50%,0) scale(1)}.auto-pass-note{border:1px solid rgba(255,226,157,.36);background:rgba(231,189,104,.1);border-radius:14px;padding:10px 12px;margin:10px 0 0;color:var(--gold2);font-weight:800}.overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.62);z-index:50;padding:20px}.overlay.show{display:flex}.victory{width:min(780px,94vw);border-radius:30px;border:2px solid rgba(255,226,157,.75);background:linear-gradient(160deg,#2b1009,#6d2118 55%,#1b0d08);padding:28px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.55);position:relative;overflow:hidden}.victory:before,.victory:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(255,215,127,.12);filter:blur(4px)}.victory:before{left:-80px;top:-80px}.victory:after{right:-80px;bottom:-80px}.victory h2{font-size:clamp(34px,6vw,72px);margin:0;color:#ffe79c;text-shadow:0 4px 0 rgba(0,0,0,.5);font-family:Georgia,serif}.score-table{width:100%;border-collapse:collapse;margin-top:18px;background:rgba(0,0,0,.16);border-radius:16px;overflow:hidden}.score-table th,.score-table td{padding:10px;border-bottom:1px solid rgba(231,189,104,.18);text-align:left}.score-table th{color:var(--gold2);font-size:12px}.rank1{font-weight:950;color:#ffe79c}.confetti{position:fixed;top:-20px;width:10px;height:16px;background:var(--gold);z-index:60;animation:fall 1.8s linear forwards}@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.2}}.score-burst{position:fixed;left:50%;top:36%;transform:translate(-50%,-6px) scale(.94);z-index:46;width:min(640px,90vw);text-align:center;border:2px solid rgba(255,239,176,.9);border-radius:28px;background:linear-gradient(160deg,rgba(39,13,7,.98),rgba(146,54,28,.96) 62%,rgba(42,18,9,.98));box-shadow:0 28px 80px rgba(0,0,0,.58),0 0 32px rgba(255,204,92,.22);padding:24px 26px;color:#ffe79c;opacity:0;pointer-events:none;transition:.2s opacity,.2s transform}.score-burst.show{opacity:1;transform:translate(-50%,0) scale(1)}.score-burst-main{font-family:Georgia,"Yu Gothic UI",serif;font-size:clamp(34px,6vw,60px);font-weight:950;text-shadow:0 4px 0 rgba(0,0,0,.45);line-height:1.05}.score-burst-sub{margin-top:8px;color:#fff2bd;font-weight:900;font-size:clamp(16px,2.8vw,24px)}.score-burst-formula{margin-top:8px;color:var(--muted);font-weight:800}.sound-grid.compact-sound{grid-template-columns:auto minmax(180px,1fr) minmax(180px,1fr);align-items:end}.sound-mini{width:38px;height:38px;padding:0;border-radius:999px;box-shadow:none;opacity:.55;background:rgba(0,0,0,.24);border:1px solid rgba(231,189,104,.26);color:transparent;font-size:0;position:relative}.sound-mini:before{content:'♪';font-size:17px;color:rgba(247,217,147,.72);line-height:1}.sound-mini.on:before{content:'♫'}.sound-mini:hover{opacity:.82;transform:none;filter:none}.reset-strong{font-size:18px;padding:15px 24px;border-radius:18px;box-shadow:0 12px 28px rgba(0,0,0,.32),0 0 0 2px rgba(255,225,150,.16)}
+/* v1.0.4: 背景だけv1.0.3寄りの緑ラシャ風に変更。レイアウト・カード位置はv1.0.2維持。 */
+.turn-panel{
+  border-radius:24px;
+  padding:12px;
+  border:1px solid rgba(231,189,104,.34);
+  background:
+    linear-gradient(135deg, rgba(128,78,35,.92), rgba(55,29,13,.96) 18%, rgba(130,80,39,.9) 36%, rgba(47,25,12,.96) 58%, rgba(111,64,27,.92) 78%, rgba(42,23,11,.96)),
+    repeating-linear-gradient(90deg, rgba(255,228,159,.08) 0 2px, transparent 2px 80px);
+  box-shadow:var(--shadow), inset 0 0 0 2px rgba(255,225,150,.08);
+}
+.current-player,
+.trick-area{
+  border-color:rgba(231,189,104,.45);
+  background:
+    radial-gradient(circle at 30% 16%, rgba(255,255,255,.08), transparent 28%),
+    radial-gradient(circle at 70% 84%, rgba(0,0,0,.16), transparent 45%),
+    linear-gradient(180deg, rgba(18,90,53,.94), rgba(10,58,35,.96));
+  box-shadow:inset 0 0 0 1px rgba(255,230,160,.12), inset 0 0 30px rgba(0,0,0,.18), 0 12px 26px rgba(0,0,0,.22);
+}
+.current-player:after,
+.trick-area:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background-image:radial-gradient(rgba(255,255,255,.035) .7px, transparent .8px);
+  background-size:6px 6px;
+  mix-blend-mode:soft-light;
+  opacity:.45;
+  pointer-events:none;
+}
+.current-player > *,
+.trick-area > *{position:relative;z-index:1}
+.trick-area{position:relative;border-style:solid}
+.trick-area .hint,.current-player .hint{color:#e9dec0}
+
+
+.online-box{margin-top:16px;border:1px solid rgba(92,162,216,.36);background:linear-gradient(135deg,rgba(31,70,92,.28),rgba(0,0,0,.13));border-radius:20px;padding:14px}
+.online-title{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.room-code{font-family:Consolas,monospace;font-size:28px;letter-spacing:.16em;color:#bce8ff;font-weight:950}
+.online-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:10px}
+.online-seat{border:1px solid rgba(231,189,104,.22);background:rgba(0,0,0,.18);border-radius:14px;padding:10px;font-weight:800;color:var(--muted)}
+.online-seat.me{border-color:rgba(188,232,255,.85);box-shadow:0 0 0 2px rgba(92,162,216,.18);color:#dff5ff}
+.online-seat.host:after{content:' HOST';font-size:11px;color:#ffe6a3;margin-left:6px}
+.online-status{line-height:1.7;color:var(--muted);font-weight:700;margin-top:8px}
+.online-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.waiting-note{border:1px dashed rgba(188,232,255,.38);border-radius:16px;background:rgba(92,162,216,.08);padding:12px;color:#dff5ff;font-weight:800;margin-top:10px}
+
+@media (max-width:860px){.grid,.turn-panel{grid-template-columns:1fr}.hero:after{font-size:48px}.card{width:58px;min-height:82px}.app{width:94vw}}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="hero">
+    <div class="title-row">
+      <div>
+        <h1>スパルタクス</h1>
+      </div>
+    </div>
+  </section>
+
+  <section id="setupPanel" class="panel" style="margin-top:16px">
+    <h2>ゲーム設定</h2>
+    <div class="setup-row">
+      <label class="field">人数
+        <select id="playerCount">
+          <option value="3">3人</option>
+          <option value="4" selected>4人</option>
+          <option value="5">5人</option>
+        </select>
+      </label>
+      <label class="field">開始プレイヤー
+        <select id="starterMode">
+          <option value="random" selected>ランダム</option>
+          <option value="p1">プレイヤー1</option>
+        </select>
+      </label>
+      <label class="field">手札表示
+        <select id="hideHandsMode">
+          <option value="show" selected>常に表示</option>
+          <option value="hide">手番ごとに隠す</option>
+        </select>
+      </label>
+    </div>
+    <div id="nameFields" class="player-name-list"></div>
+    <div class="footer-actions">
+      <button id="startBtn" class="primary">ローカルでゲーム開始</button>
+      <button id="fillNamesBtn" class="ghost">名前を初期化</button>
+    </div>
+
+    <div class="online-box">
+      <div class="online-title">
+        <h3 style="margin:0">LocalCASTオンライン</h3>
+        <span id="onlineBadge" class="pill">未接続</span>
+      </div>
+      <div class="setup-row">
+        <label class="field">自分の名前
+          <input id="onlineName" type="text" value="プレイヤー1" maxlength="18">
+        </label>
+        <label class="field">ルームID
+          <input id="roomCodeInput" type="text" placeholder="例：ABCD" maxlength="8" style="text-transform:uppercase">
+        </label>
+      </div>
+      <div class="online-actions">
+        <button id="createRoomBtn" class="secondary">部屋を作る</button>
+        <button id="joinRoomBtn" class="secondary">部屋に参加</button>
+        <button id="copyUrlBtn" class="ghost">参加URLをコピー</button>
+        <button id="onlineStartBtn" class="primary" disabled>オンライン開始</button>
+      </div>
+      <div id="onlineRoomStatus" class="online-status">部屋を作るか、ルームIDを入力して参加してください。</div>
+      <div id="onlinePlayers" class="online-list"></div>
+    </div>
+  </section>
+
+  <section id="gamePanel" style="display:none">
+    <div class="status-bar">
+      <div class="status-card"><div class="status-label">現在</div><div id="statusNow" class="status-value">-</div></div>
+      <div class="status-card"><div class="status-label">トリック</div><div id="statusTrick" class="status-value">-</div></div>
+      <div class="status-card"><div class="status-label">場の最小数字</div><div id="statusLowest" class="status-value">-</div></div>
+      <div class="status-card"><div class="status-label">場の得点見込み</div><div id="statusPot" class="status-value">-</div></div>
+    </div>
+
+    <div class="turn-panel">
+      <div class="current-player panel">
+        <h2>手番</h2>
+        <div id="turnContent"></div>
+      </div>
+      <div class="trick-area">
+        <div class="trick-title"><h2>現在の場</h2><span id="activeInfo" class="pill">-</span></div>
+        <div id="playedCards" class="played-cards"></div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h2>プレイヤー状況</h2>
+        <div id="playersArea" class="players"></div>
+      </div>
+      <div class="panel">
+        <h2>進行ログ</h2>
+        <div id="logArea" class="log"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <section class="panel">
+      <h3>ルール早見</h3>
+      <ol class="rule-list">
+        <li>各プレイヤーは <b>1〜10</b> と <b>B</b> の11枚を持ちます。</li>
+        <li>出すカードは、場にある最小の数字カードより <b>小さい数字</b> が基本です。</li>
+        <li><b>B</b> はいつでも出せます。Bは数字ではなく、獲得トリックの得点を倍にします。</li>
+        <li>各トリックの初手はパスできません。誰かがカードを出した後だけパスできます。</li>
+        <li>出せるカードが何もない場合は、自動的にパス演出を出してパスします。</li>
+        <li>パスしたプレイヤーは、そのトリックから離脱します。</li>
+        <li>誰か1人以外がパスしたら、最小数字カードを出したプレイヤーが場札を獲得します。</li>
+        <li>誰かの手札がなくなったら終了。残った手札はマイナス点です。</li>
+      </ol>
+    </section>
+    <section class="panel">
+      <h3>音</h3>
+      <div class="sound-grid compact-sound">
+        <button id="soundToggle" class="sound-mini" title="音のオン/オフ" aria-label="音のオン/オフ"></button>
+        <label class="field">BGM音量 <div class="range-row"><input id="bgmVolume" type="range" min="0" max="100" value="28"><span id="bgmVolText">28</span></div></label>
+        <label class="field">効果音量 <div class="range-row"><input id="seVolume" type="range" min="0" max="100" value="55"><span id="seVolText">55</span></div></label>
+      </div>
+      <div class="footer-actions">
+        <button id="newGameBtn" class="primary reset-strong">最初から始める</button>
+        <button id="rulesToggle" class="ghost">ルール表示を更新</button>
+      </div>
+      <p class="hint">音はボタン操作後にだけ鳴ります。ページを開いただけでは再生しません。</p>
+    </section>
+  </div>
+</div>
+
+<div id="passBurst" class="pass-burst">自動パス</div>
+<div id="scoreBurst" class="score-burst"><div id="scoreBurstMain" class="score-burst-main">得点獲得</div><div id="scoreBurstSub" class="score-burst-sub"></div><div id="scoreBurstFormula" class="score-burst-formula"></div></div>
+
+<div id="victoryOverlay" class="overlay">
+  <div class="victory">
+    <h2 id="victoryTitle">勝者</h2>
+    <p id="victoryText" class="sub" style="margin-left:auto;margin-right:auto"></p>
+    <div id="finalScores"></div>
+    <div class="footer-actions" style="justify-content:center">
+      <button id="closeVictoryBtn" class="primary">結果を閉じる</button>
+      <button id="restartFromVictoryBtn" class="secondary">もう一度遊ぶ</button>
+    </div>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+(function(){
+  'use strict';
+  const VERSION = '1.0.6';
+  const COLORS = ['#d04b3f','#4a91d1','#53a86b','#caa03e','#8b68d8'];
+  const DEFAULT_NAMES = ['プレイヤー1','プレイヤー2','プレイヤー3','プレイヤー4','プレイヤー5'];
+  const CARD_B = 'B';
+  let state = null;
+  let socket = null;
+  let online = {enabled:false, roomCode:null, mySeat:null, isHost:false, lobby:null, lastEventId:null};
+  let audio = {ctx:null, master:null, bgmGain:null, seGain:null, bgmTimer:null, enabled:false, beat:0};
+
+  const $ = id => document.getElementById(id);
+  const isB = card => card === CARD_B;
+  const cardValue = card => isB(card) ? null : Number(card);
+  const clone = obj => JSON.parse(JSON.stringify(obj));
+  const mod = (n,m) => ((n % m) + m) % m;
+
+  function deck(){ return [1,2,3,4,5,6,7,8,9,10,CARD_B]; }
+  function sortHand(hand){ return hand.slice().sort((a,b)=> (isB(a)?99:a) - (isB(b)?99:b)); }
+  function scoreCards(cards){
+    const sum = cards.reduce((acc,c)=> acc + (isB(c.card) ? 0 : Number(c.card)), 0);
+    const b = cards.filter(c=>isB(c.card)).length;
+    return sum * Math.pow(2,b);
+  }
+  function scoreHandPenalty(hand){
+    const sum = hand.reduce((acc,c)=> acc + (isB(c) ? 0 : Number(c)), 0);
+    const b = hand.filter(isB).length;
+    return -(sum * Math.pow(2,b));
+  }
+  function trickSummary(cards){
+    const nums = cards.filter(c=>!isB(c.card)).map(c=>c.card).join('+') || '0';
+    const b = cards.filter(c=>isB(c.card)).length;
+    return b ? `${nums} × ${Math.pow(2,b)}` : nums;
+  }
+  function createState({playerCount=4, names=[], starterMode='random', hideHands=false}={}){
+    const players = Array.from({length:playerCount},(_,i)=>({
+      id:i,
+      name:(names[i] || DEFAULT_NAMES[i]).trim() || DEFAULT_NAMES[i],
+      color:COLORS[i],
+      hand:deck(),
+      captured:[],
+      passed:false
+    }));
+    const starter = starterMode === 'p1' ? 0 : Math.floor(Math.random()*playerCount);
+    return {
+      version: VERSION,
+      phase:'playing',
+      playerCount,
+      players,
+      leaderIndex:starter,
+      currentPlayerIndex:starter,
+      trickNo:1,
+      currentTrick:{cards:[], currentLowest:null, lowestPlayer:null, active:Array(playerCount).fill(true)},
+      hideHands,
+      turnUnlocked:!hideHands,
+      logs:[`${players[starter].name}から開始します。`],
+      final:null
+    };
+  }
+  function getActiveIndexes(s){
+    return s.players.map((p,i)=>s.currentTrick.active[i] && p.hand.length>0 ? i : null).filter(i=>i!==null);
+  }
+  function getLegalCardsForState(s, playerIndex){
+    const p = s.players[playerIndex];
+    if(!p || s.phase !== 'playing' || !s.currentTrick.active[playerIndex]) return [];
+    const lowest = s.currentTrick.currentLowest;
+    return sortHand(p.hand).filter(card => isB(card) || lowest === null || Number(card) < lowest);
+  }
+  function canManualPassForState(s, playerIndex=s.currentPlayerIndex){
+    return !!(s && s.phase === 'playing' && s.currentTrick.active[playerIndex] && s.currentTrick.cards.length > 0);
+  }
+  function showPassBurst(text){
+    const el = $('passBurst');
+    if(!el) return;
+    el.textContent = text;
+    el.classList.add('show');
+    clearTimeout(showPassBurst.timer);
+    showPassBurst.timer = setTimeout(()=>el.classList.remove('show'), 950);
+  }
+  function showScoreBurst(name, points, formula){
+    if(typeof document === 'undefined') return;
+    const el = $('scoreBurst');
+    const main = $('scoreBurstMain');
+    const sub = $('scoreBurstSub');
+    const detail = $('scoreBurstFormula');
+    if(!el || !main || !sub || !detail) return;
+    main.textContent = `${name} +${points}点`; 
+    sub.textContent = 'トリック獲得！';
+    detail.textContent = formula ? `計算：${formula} = ${points}点` : '';
+    el.classList.add('show');
+    clearTimeout(showScoreBurst.timer);
+    showScoreBurst.timer = setTimeout(()=>el.classList.remove('show'), 1450);
+  }
+  function autoPassIfNoLegal(s){
+    if(!s || s.phase !== 'playing') return 0;
+    let count = 0;
+    const guardLimit = s.playerCount + 2;
+    while(s.phase === 'playing' && count < guardLimit){
+      const idx = s.currentPlayerIndex;
+      if(!canManualPassForState(s, idx)) break;
+      if(getLegalCardsForState(s, idx).length > 0) break;
+      s.currentTrick.active[idx] = false;
+      s.players[idx].passed = true;
+      count += 1;
+      const name = s.players[idx].name;
+      addLog(s, `${name}は出せるカードがないため、自動的にパスしました。`);
+      showPassBurst(`${name} 自動パス`);
+      playSE('pass');
+      const active = getActiveIndexes(s);
+      if(active.length <= 1){
+        resolveCurrentTrick(s);
+        break;
+      }
+      s.currentPlayerIndex = findNextActive(s, idx);
+      s.turnUnlocked = !s.hideHands;
+    }
+    return count;
+  }
+  function cardLabel(card){ return isB(card) ? 'B' : (card === '?' ? '？' : String(card)); }
+  function findNextActive(s, fromIndex){
+    for(let step=1; step<=s.playerCount; step++){
+      const idx = mod(fromIndex + step, s.playerCount);
+      if(s.currentTrick.active[idx] && s.players[idx].hand.length > 0) return idx;
+    }
+    return fromIndex;
+  }
+  function removeCardFromHand(hand, card){
+    const idx = hand.findIndex(c=>String(c)===String(card));
+    if(idx < 0) return false;
+    hand.splice(idx,1);
+    return true;
+  }
+  function addLog(s, text){ s.logs.unshift(text); s.logs = s.logs.slice(0,80); }
+  function startNewTrick(s, leader){
+    s.trickNo += 1;
+    s.leaderIndex = leader;
+    s.currentPlayerIndex = leader;
+    s.currentTrick = {cards:[], currentLowest:null, lowestPlayer:null, active:Array(s.playerCount).fill(true)};
+    s.players.forEach(p=>p.passed=false);
+    s.turnUnlocked = !s.hideHands;
+    addLog(s, `第${s.trickNo}トリック開始。${s.players[leader].name}がリードします。`);
+  }
+  function chooseWinner(s){
+    if(s.currentTrick.lowestPlayer !== null && s.currentTrick.lowestPlayer !== undefined) return s.currentTrick.lowestPlayer;
+    const active = getActiveIndexes(s);
+    if(active.length) return active[0];
+    if(s.currentTrick.cards.length) return s.currentTrick.cards[s.currentTrick.cards.length-1].player;
+    return s.leaderIndex;
+  }
+  function resolveCurrentTrick(s, {gameEnd=false}={}){
+    if(!s.currentTrick.cards.length) return null;
+    const winner = chooseWinner(s);
+    const cards = s.currentTrick.cards.slice();
+    const points = scoreCards(cards);
+    s.players[winner].captured.push(cards);
+    const formula = trickSummary(cards);
+    const winnerName = s.players[winner].name;
+    addLog(s, `${winnerName}が第${s.trickNo}トリックを獲得（${formula} = ${points}点）。`);
+    showScoreBurst(winnerName, points, formula);
+    playSE('score');
+    s.currentTrick.cards = [];
+    if(gameEnd) return winner;
+    const nextLeader = mod(winner + 1, s.playerCount);
+    startNewTrick(s, nextLeader);
+    return winner;
+  }
+  function computeScoresForState(s){
+    return s.players.map((p,i)=>{
+      const capturedDetails = p.captured.map((cards,idx)=>({
+        index:idx+1,
+        formula:trickSummary(cards),
+        points:scoreCards(cards),
+        cards:cards.map(c=>c.card)
+      }));
+      const capturedScore = capturedDetails.reduce((a,d)=>a+d.points,0);
+      const penalty = scoreHandPenalty(p.hand);
+      return {playerIndex:i,name:p.name,color:p.color,capturedScore,penalty,total:capturedScore+penalty,remaining:sortHand(p.hand),tricks:p.captured.length,details:capturedDetails};
+    }).sort((a,b)=> b.total - a.total || b.capturedScore - a.capturedScore || a.playerIndex - b.playerIndex);
+  }
+  function finishGame(s){
+    resolveCurrentTrick(s,{gameEnd:true});
+    s.phase = 'gameover';
+    s.players.forEach(p=>p.passed=false);
+    s.final = computeScoresForState(s);
+    const top = s.final[0];
+    addLog(s, `ゲーム終了。勝者は${top.name}、${top.total}点です。`);
+  }
+  function playCardCore(s, card){
+    if(s.phase !== 'playing') return {ok:false, message:'ゲームは終了しています。'};
+    const idx = s.currentPlayerIndex;
+    const player = s.players[idx];
+    const normalized = card === CARD_B || String(card).toUpperCase()==='B' ? CARD_B : Number(card);
+    const legal = getLegalCardsForState(s, idx).map(String);
+    if(!legal.includes(String(normalized))) return {ok:false, message:'このカードは現在出せません。'};
+    if(!removeCardFromHand(player.hand, normalized)) return {ok:false, message:'手札にそのカードがありません。'};
+    s.currentTrick.cards.push({player:idx, card:normalized});
+    if(!isB(normalized)){
+      const v = Number(normalized);
+      if(s.currentTrick.currentLowest === null || v < s.currentTrick.currentLowest){
+        s.currentTrick.currentLowest = v;
+        s.currentTrick.lowestPlayer = idx;
+      }
+    }
+    addLog(s, `${player.name}が「${cardLabel(normalized)}」を出しました。`);
+    if(player.hand.length === 0){
+      addLog(s, `${player.name}の手札がなくなったためゲーム終了です。場札を精算します。`);
+      finishGame(s);
+      return {ok:true, ended:true};
+    }
+    const active = getActiveIndexes(s);
+    if(active.length <= 1 && s.currentTrick.cards.length){
+      resolveCurrentTrick(s);
+      return {ok:true, resolved:true};
+    }
+    s.currentPlayerIndex = findNextActive(s, idx);
+    s.turnUnlocked = !s.hideHands;
+    const autoPassed = autoPassIfNoLegal(s);
+    return autoPassed ? {ok:true, autoPassed} : {ok:true};
+  }
+  function passCore(s){
+    if(s.phase !== 'playing') return {ok:false,message:'ゲームは終了しています。'};
+    const idx = s.currentPlayerIndex;
+    if(!s.currentTrick.active[idx]) return {ok:false,message:'すでにパスしています。'};
+    if(!canManualPassForState(s, idx)) return {ok:false,message:'各トリックの初手はパスできません。まずカードを1枚出してください。'};
+    s.currentTrick.active[idx] = false;
+    s.players[idx].passed = true;
+    addLog(s, `${s.players[idx].name}がパスしました。`);
+    const active = getActiveIndexes(s);
+    if(active.length <= 1){
+      resolveCurrentTrick(s);
+      return {ok:true,resolved:true};
+    }
+    s.currentPlayerIndex = findNextActive(s, idx);
+    s.turnUnlocked = !s.hideHands;
+    const autoPassed = autoPassIfNoLegal(s);
+    return autoPassed ? {ok:true, autoPassed} : {ok:true};
+  }
+
+  function initNameFields(){
+    const count = Number($('playerCount').value || 4);
+    const root = $('nameFields');
+    root.innerHTML = '';
+    for(let i=0;i<count;i++){
+      const label = document.createElement('label');
+      label.className = 'field';
+      label.innerHTML = `プレイヤー${i+1}<input id="pname${i}" value="${DEFAULT_NAMES[i]}" maxlength="16">`;
+      root.appendChild(label);
+    }
+  }
+  function getNames(){
+    const count = Number($('playerCount').value || 4);
+    return Array.from({length:count},(_,i)=>($(`pname${i}`)?.value || DEFAULT_NAMES[i]).trim() || DEFAULT_NAMES[i]);
+  }
+  function startGame(){
+    const count = Number($('playerCount').value);
+    state = createState({
+      playerCount:count,
+      names:getNames(),
+      starterMode:$('starterMode').value,
+      hideHands:$('hideHandsMode').value === 'hide'
+    });
+    $('setupPanel').style.display='none';
+    $('gamePanel').style.display='block';
+    playSE('start');
+    render();
+  }
+  function restart(){
+    if(state && state.online){
+      if(online.isHost && socket){ socket.emit('room:reset'); }
+      else alert('オンライン対戦中はホストだけが最初から始められます。');
+      return;
+    }
+    stopBgm();
+    state = null;
+    $('setupPanel').style.display='block';
+    $('gamePanel').style.display='none';
+    $('victoryOverlay').classList.remove('show');
+    initNameFields();
+  }
+  function render(){
+    if(!state) return;
+    renderStatus();renderTurn();renderTrick();renderPlayers();renderLog();
+    if(state.phase === 'gameover') showVictory();
+  }
+  function renderStatus(){
+    const p = state.players[state.currentPlayerIndex];
+    $('statusNow').textContent = state.phase === 'gameover' ? '終了' : `${p.name}の手番`;
+    $('statusTrick').textContent = `第${state.trickNo}`;
+    const low = state.currentTrick.currentLowest;
+    $('statusLowest').textContent = low === null ? '-' : `${low}（${state.players[state.currentTrick.lowestPlayer].name}）`;
+    $('statusPot').textContent = state.currentTrick.cards.length ? `${trickSummary(state.currentTrick.cards)} = ${scoreCards(state.currentTrick.cards)}点` : '0点';
+    const activeNames = getActiveIndexes(state).map(i=>state.players[i].name).join(' / ') || '-';
+    $('activeInfo').textContent = `参加中: ${activeNames}`;
+  }
+  function renderTurn(){
+    const root = $('turnContent');
+    const p = state.players[state.currentPlayerIndex];
+    if(state.phase === 'gameover'){
+      root.innerHTML = '<div class="gate"><b>ゲーム終了</b><p class="hint">結果画面を確認してください。</p></div>';
+      return;
+    }
+    if(state.online && online.mySeat !== state.currentPlayerIndex){
+      const me = online.mySeat === null || online.mySeat === undefined ? '観戦中' : `あなたは${escapeHtml(state.players[online.mySeat]?.name || '参加者')}です。`;
+      root.innerHTML = `<div class="gate"><div class="turn-name"><span class="token" style="background:${p.color}"></span>${escapeHtml(p.name)}の手番</div><p class="hint">${me}<br>相手の操作を待っています。</p></div>`;
+      return;
+    }
+    if(state.hideHands && !state.turnUnlocked && !state.online){
+      root.innerHTML = `<div class="gate"><div class="turn-name">${escapeHtml(p.name)}の手番</div><p class="hint">他の人に手札を見せない場合は、端末を渡してから押してください。</p><button class="primary" id="unlockTurnBtn">手番を見る</button></div>`;
+      $('unlockTurnBtn').addEventListener('click',()=>{ state.turnUnlocked = true; playSE('click'); render(); });
+      return;
+    }
+    const legal = new Set(getLegalCardsForState(state,state.currentPlayerIndex).map(String));
+    const hand = sortHand(p.hand);
+    const cardsHtml = hand.map(card=>{
+      const ok = legal.has(String(card));
+      return `<button class="card ${isB(card)?'flag':''} ${ok?'legal':''}" data-card="${card}" ${ok?'':'disabled'}><span class="num">${cardLabel(card)}</span><span class="tag">${isB(card)?'旗':'CARD'}</span></button>`;
+    }).join('');
+    const lowestText = state.currentTrick.currentLowest === null ? '数字カードは何でも出せます。Bも出せます。' : `${state.currentTrick.currentLowest}より小さい数字、またはBを出せます。`;
+    const canPass = canManualPassForState(state, state.currentPlayerIndex);
+    const noLegalNote = legal.size === 0 && canPass ? '<div class="auto-pass-note">出せるカードがないため、自動的にパスします。</div>' : '';
+    const passTitle = canPass ? 'このトリックから離脱します。' : '各トリックの初手はパスできません。';
+    root.innerHTML = `<div class="turn-name"><span class="token" style="background:${p.color}"></span>${escapeHtml(p.name)}</div><p class="hint">${lowestText}</p>${noLegalNote}<div class="hand">${cardsHtml}</div><div class="footer-actions"><button id="passBtn" class="danger" ${canPass?'':'disabled'} title="${passTitle}">パス</button>${state.hideHands?'<button id="lockBtn" class="ghost">手札を隠す</button>':''}</div>`;
+    root.querySelectorAll('button.card').forEach(btn=>btn.addEventListener('click',()=>{
+      if(state.online){
+        sendOnlineAction('playCard', {card:btn.dataset.card});
+        return;
+      }
+      const result = playCardCore(state, btn.dataset.card);
+      playSE(btn.dataset.card === 'B' ? 'flag':'card');
+      if(!result.ok) alert(result.message);
+      render();
+    }));
+    $('passBtn').addEventListener('click',()=>{
+      if(state.online){ sendOnlineAction('pass', {}); return; }
+      const result = passCore(state); if(!result.ok) alert(result.message); else playSE('pass'); render();
+    });
+    const lock = $('lockBtn'); if(lock) lock.addEventListener('click',()=>{state.turnUnlocked=false;render();});
+  }
+  function renderTrick(){
+    const root = $('playedCards');
+    if(!state.currentTrick.cards.length){
+      root.innerHTML = '<p class="hint">まだカードは出ていません。</p>'; return;
+    }
+    root.innerHTML = state.currentTrick.cards.map(c=>{
+      const lowest = !isB(c.card) && c.player === state.currentTrick.lowestPlayer && Number(c.card) === state.currentTrick.currentLowest;
+      return `<div class="played-wrap"><div class="card small ${isB(c.card)?'flag':''} ${lowest?'lowest':''}"><span class="num">${cardLabel(c.card)}</span><span class="tag">${isB(c.card)?'旗':'CARD'}</span></div><div class="played-name"><span class="token" style="width:10px;height:10px;background:${state.players[c.player].color}"></span>${escapeHtml(state.players[c.player].name)}</div></div>`;
+    }).join('');
+  }
+  function renderPlayers(){
+    const root = $('playersArea');
+    root.innerHTML = state.players.map((p,i)=>{
+      const capturedScore = p.captured.reduce((sum,cards)=>sum+scoreCards(cards),0);
+      const classes = ['player-card'];
+      if(state.currentPlayerIndex===i && state.phase==='playing') classes.push('current');
+      if(p.passed) classes.push('passed');
+      const chips = p.captured.slice(-5).map((cards,idx)=>`<span class="trick-chip">${scoreCards(cards)}点</span>`).join('') || '<span class="hint">獲得なし</span>';
+      return `<div class="${classes.join(' ')}"><div class="player-top"><div class="player-title"><span class="token" style="background:${p.color}"></span>${escapeHtml(p.name)}</div><span class="pill">${p.passed?'パス':'参加'}</span></div><div class="stats"><div class="mini-stat"><b>${p.hand.length}</b><span>手札</span></div><div class="mini-stat"><b>${p.captured.length}</b><span>獲得山</span></div><div class="mini-stat"><b>${capturedScore}</b><span>獲得点</span></div></div><div class="captured">${chips}</div></div>`;
+    }).join('');
+  }
+  function renderLog(){
+    $('logArea').innerHTML = state.logs.map(x=>`<div class="log-entry">${escapeHtml(x)}</div>`).join('');
+  }
+  function showVictory(){
+    if(!state || !state.final) return;
+    const topScore = state.final[0].total;
+    const winners = state.final.filter(x=>x.total===topScore);
+    $('victoryTitle').textContent = winners.length > 1 ? '同点勝利' : `${winners[0].name} 勝利！`;
+    $('victoryText').textContent = winners.length > 1 ? `${winners.map(w=>w.name).join('、')} が ${topScore}点で同点です。` : `${winners[0].name} が ${topScore}点で勝利しました。`;
+    $('finalScores').innerHTML = `<table class="score-table"><thead><tr><th>順位</th><th>プレイヤー</th><th>獲得点</th><th>残り手札減点</th><th>合計</th><th>残り手札</th></tr></thead><tbody>${state.final.map((s,idx)=>`<tr class="${idx===0?'rank1':''}"><td>${idx+1}</td><td><span class="token" style="background:${s.color}"></span>${escapeHtml(s.name)}</td><td>${s.capturedScore}</td><td>${s.penalty}</td><td>${s.total}</td><td>${s.remaining.map(cardLabel).join(', ') || '-'}</td></tr>`).join('')}</tbody></table>`;
+    $('victoryOverlay').classList.add('show');
+    launchConfetti(); playSE('win');
+  }
+  let confettiLock=false;
+  function launchConfetti(){
+    if(confettiLock) return;
+    confettiLock=true; setTimeout(()=>confettiLock=false,2200);
+    for(let i=0;i<90;i++){
+      const el=document.createElement('div'); el.className='confetti';
+      el.style.left=Math.random()*100+'vw'; el.style.background=[COLORS[0],COLORS[1],COLORS[2],COLORS[3],COLORS[4],'#ffd878'][i%6];
+      el.style.animationDelay=(Math.random()*0.7)+'s'; el.style.transform=`rotate(${Math.random()*360}deg)`;
+      document.body.appendChild(el); setTimeout(()=>el.remove(),2600);
+    }
+  }
+  function escapeHtml(v){ return String(v).replace(/[&<>'"]/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch])); }
+
+
+  function setupSocket(){
+    if(socket) return true;
+    if(typeof io === 'undefined'){
+      alert('LocalCASTサーバーから開いていないため、オンライン機能は使えません。start_windows.batで起動してください。');
+      return false;
+    }
+    socket = io();
+    socket.on('connect', ()=>{ updateOnlineBadge('接続済み'); });
+    socket.on('disconnect', ()=>{ updateOnlineBadge('切断'); });
+    socket.on('room:error', msg=>{ alert(msg || 'オンライン処理でエラーが発生しました。'); });
+    socket.on('room:joined', payload=>{
+      online.enabled = true;
+      online.roomCode = payload.roomCode;
+      online.mySeat = payload.mySeat;
+      online.isHost = !!payload.isHost;
+      $('roomCodeInput').value = payload.roomCode;
+      updateOnlineBadge(`部屋 ${payload.roomCode}`);
+      playSE('start');
+    });
+    socket.on('room:lobby', lobby=>{
+      online.lobby = lobby;
+      online.isHost = !!lobby.isHost;
+      renderOnlineLobby();
+    });
+    socket.on('game:state', payload=>{
+      online.enabled = true;
+      online.roomCode = payload.roomCode;
+      online.mySeat = payload.mySeat;
+      online.isHost = !!payload.isHost;
+      state = payload.state;
+      state.online = true;
+      state.turnUnlocked = true;
+      $('setupPanel').style.display='none';
+      $('gamePanel').style.display='block';
+      $('victoryOverlay').classList.remove('show');
+      handleOnlineEvent(payload.event);
+      render();
+    });
+    socket.on('room:resetDone', payload=>{
+      state = null;
+      $('setupPanel').style.display='block';
+      $('gamePanel').style.display='none';
+      $('victoryOverlay').classList.remove('show');
+      if(payload && payload.lobby){ online.lobby = payload.lobby; renderOnlineLobby(); }
+    });
+    return true;
+  }
+  function updateOnlineBadge(text){ const el=$('onlineBadge'); if(el) el.textContent=text; }
+  function onlineName(){ return ($('onlineName')?.value || 'プレイヤー').trim().slice(0,18) || 'プレイヤー'; }
+  function createRoom(){ if(!setupSocket()) return; socket.emit('room:create', {name:onlineName()}); }
+  function joinRoom(){
+    if(!setupSocket()) return;
+    const code = ($('roomCodeInput')?.value || '').trim().toUpperCase();
+    if(!code){ alert('ルームIDを入力してください。'); return; }
+    socket.emit('room:join', {roomCode:code, name:onlineName()});
+  }
+  function renderOnlineLobby(){
+    const lobby = online.lobby;
+    const status = $('onlineRoomStatus');
+    const list = $('onlinePlayers');
+    const startBtn = $('onlineStartBtn');
+    if(!lobby){ return; }
+    const shareUrl = `${location.origin}${location.pathname}?room=${encodeURIComponent(lobby.roomCode)}`;
+    status.innerHTML = `ルームID：<span class="room-code">${escapeHtml(lobby.roomCode)}</span><br>参加URL：${escapeHtml(shareUrl)}<br>${lobby.started ? '対戦中です。' : '参加者がそろったらホストがオンライン開始を押してください。'}`;
+    list.innerHTML = lobby.players.map(p=>`<div class="online-seat ${p.seat===online.mySeat?'me':''} ${p.isHost?'host':''}"><span class="token" style="background:${p.color}"></span>${escapeHtml(p.name)}<br><span class="hint">席${p.seat+1} / ${p.connected?'接続中':'切断'}</span></div>`).join('');
+    if(startBtn){
+      const needed = Number($('playerCount').value || 4);
+      startBtn.disabled = !(online.isHost && !lobby.started && lobby.players.length >= needed && needed >= 3 && needed <= 5);
+      startBtn.title = startBtn.disabled ? `ホストのみ開始できます。設定人数${needed}人に対して現在${lobby.players.length}人です。` : 'オンライン対戦を開始します。';
+    }
+  }
+  function startOnlineGame(){
+    if(!socket || !online.roomCode){ alert('先に部屋を作成してください。'); return; }
+    const playerCount = Number($('playerCount').value || 4);
+    socket.emit('game:start', {playerCount, starterMode:$('starterMode').value, hideHands:false});
+  }
+  function sendOnlineAction(type, payload){
+    if(!socket || !state || !state.online){ return; }
+    socket.emit('game:action', Object.assign({type}, payload || {}));
+  }
+  function copyOnlineUrl(){
+    const code = online.roomCode || ($('roomCodeInput')?.value || '').trim().toUpperCase();
+    if(!code){ alert('部屋を作るか、ルームIDを入力してください。'); return; }
+    const url = `${location.origin}${location.pathname}?room=${encodeURIComponent(code)}`;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(()=>alert('参加URLをコピーしました。')).catch(()=>alert(url));
+    } else alert(url);
+  }
+  function handleOnlineEvent(event){
+    if(!event || event.id === online.lastEventId) return;
+    online.lastEventId = event.id;
+    if(event.kind === 'play'){ playSE(event.card === 'B' ? 'flag':'card'); }
+    else if(event.kind === 'pass'){ showPassBurst(`${event.name} パス`); playSE('pass'); }
+    else if(event.kind === 'autoPass'){ showPassBurst(`${event.name} 自動パス`); playSE('pass'); }
+    else if(event.kind === 'score'){ showScoreBurst(event.name, event.points, event.formula); playSE('score'); }
+    else if(event.kind === 'gameover'){ playSE('win'); }
+  }
+  function readRoomFromUrl(){
+    try{
+      const code = new URL(location.href).searchParams.get('room');
+      if(code && $('roomCodeInput')) $('roomCodeInput').value = code.toUpperCase();
+    }catch(e){}
+  }
+
+  function ensureAudio(){
+    if(audio.ctx) return;
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if(!Ctx) return;
+    audio.ctx = new Ctx();
+    audio.master = audio.ctx.createGain(); audio.master.gain.value = 0.72; audio.master.connect(audio.ctx.destination);
+    audio.bgmGain = audio.ctx.createGain(); audio.bgmGain.gain.value = Number($('bgmVolume').value)/100 * .18; audio.bgmGain.connect(audio.master);
+    audio.seGain = audio.ctx.createGain(); audio.seGain.gain.value = Number($('seVolume').value)/100 * .42; audio.seGain.connect(audio.master);
+  }
+  function tone(freq, dur=.1, type='sine', gain=.2){
+    if(!audio.enabled) return;
+    ensureAudio(); if(!audio.ctx) return;
+    const now=audio.ctx.currentTime;
+    const osc=audio.ctx.createOscillator(); const g=audio.ctx.createGain();
+    osc.type=type; osc.frequency.setValueAtTime(freq, now);
+    g.gain.setValueAtTime(0.0001, now); g.gain.exponentialRampToValueAtTime(gain, now+.015); g.gain.exponentialRampToValueAtTime(0.0001, now+dur);
+    osc.connect(g); g.connect(audio.seGain); osc.start(now); osc.stop(now+dur+.03);
+  }
+  function playSE(kind){
+    if(!audio.enabled) return;
+    if(kind==='card'){ tone(420,.08,'triangle',.16); setTimeout(()=>tone(620,.06,'triangle',.10),55); }
+    else if(kind==='flag'){ tone(260,.12,'sawtooth',.14); setTimeout(()=>tone(520,.14,'sawtooth',.10),80); }
+    else if(kind==='pass'){ tone(180,.12,'square',.12); }
+    else if(kind==='score'){ [330,440,660].forEach((f,i)=>setTimeout(()=>tone(f,.12,'triangle',.16),i*70)); }
+    else if(kind==='win'){ [392,523,659,784].forEach((f,i)=>setTimeout(()=>tone(f,.22,'triangle',.18),i*95)); }
+    else if(kind==='start'){ [196,247,294].forEach((f,i)=>setTimeout(()=>tone(f,.11,'triangle',.12),i*75)); }
+    else tone(360,.06,'triangle',.08);
+  }
+  function startBgm(){
+    ensureAudio(); if(!audio.ctx) return;
+    stopBgm(false);
+    const scale=[196,220,247,294,330,294,247,220];
+    audio.bgmTimer=setInterval(()=>{
+      if(!audio.enabled || !audio.ctx) return;
+      const f=scale[audio.beat++ % scale.length];
+      const now=audio.ctx.currentTime;
+      const osc=audio.ctx.createOscillator(); const g=audio.ctx.createGain();
+      osc.type='triangle'; osc.frequency.setValueAtTime(f, now);
+      g.gain.setValueAtTime(0.0001, now); g.gain.exponentialRampToValueAtTime(.22, now+.03); g.gain.exponentialRampToValueAtTime(0.0001, now+.45);
+      osc.connect(g); g.connect(audio.bgmGain); osc.start(now); osc.stop(now+.5);
+    },520);
+  }
+  function stopBgm(disable=true){ if(audio.bgmTimer){clearInterval(audio.bgmTimer);audio.bgmTimer=null;} if(disable) audio.enabled=false; }
+  function toggleSound(){
+    ensureAudio(); if(!audio.ctx) return;
+    if(audio.ctx.state === 'suspended') audio.ctx.resume();
+    audio.enabled = !audio.enabled;
+    const btn = $('soundToggle');
+    if(btn){
+      btn.classList.toggle('on', audio.enabled);
+      btn.title = audio.enabled ? '音をオフ' : '音をオン';
+      btn.setAttribute('aria-label', btn.title);
+    }
+    if(audio.enabled){ startBgm(); playSE('start'); } else stopBgm(true);
+  }
+  function updateVolumes(){
+    $('bgmVolText').textContent = $('bgmVolume').value; $('seVolText').textContent = $('seVolume').value;
+    if(audio.bgmGain) audio.bgmGain.gain.value = Number($('bgmVolume').value)/100 * .18;
+    if(audio.seGain) audio.seGain.gain.value = Number($('seVolume').value)/100 * .42;
+  }
+
+  function init(){
+    initNameFields();
+    $('playerCount').addEventListener('change',initNameFields);
+    $('fillNamesBtn').addEventListener('click',initNameFields);
+    $('startBtn').addEventListener('click',startGame);
+    $('newGameBtn').addEventListener('click',restart);
+    $('closeVictoryBtn').addEventListener('click',()=> $('victoryOverlay').classList.remove('show'));
+    $('restartFromVictoryBtn').addEventListener('click',restart);
+    $('soundToggle').addEventListener('click',toggleSound);
+    $('bgmVolume').addEventListener('input',updateVolumes);
+    $('seVolume').addEventListener('input',updateVolumes);
+    $('rulesToggle').addEventListener('click',()=>{ alert('ルール早見は画面左下に表示しています。'); playSE('click'); });
+    $('createRoomBtn').addEventListener('click',createRoom);
+    $('joinRoomBtn').addEventListener('click',joinRoom);
+    $('onlineStartBtn').addEventListener('click',startOnlineGame);
+    $('copyUrlBtn').addEventListener('click',copyOnlineUrl);
+    $('onlineName').addEventListener('input',()=>{ if(online.lobby) renderOnlineLobby(); });
+    $('playerCount').addEventListener('change',()=>{ if(online.lobby) renderOnlineLobby(); });
+    readRoomFromUrl();
+    const soundBtn = $('soundToggle');
+    if(soundBtn){ soundBtn.title = '音をオン'; soundBtn.setAttribute('aria-label','音をオン'); }
+    updateVolumes();
+  }
+
+  window.SpartacusDebug = {createState, getLegalCardsForState, canManualPassForState, autoPassIfNoLegal, showScoreBurst, playCardCore, passCore, computeScoresForState, scoreCards, scoreHandPenalty, clone, setupSocket};
+  document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+</body>
+</html>

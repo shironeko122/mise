@@ -1,0 +1,15 @@
+{
+  "name": "spartacus-localcast",
+  "version": "1.0.6",
+  "private": true,
+  "description": "Spartacus LocalCAST browser game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.3",
+    "socket.io": "^4.7.5"
+  }
+}
