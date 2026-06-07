@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1d4ed8">
+<title>ポイントカードナビ v1.0.4</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#d9e2ef;--blue:#1d4ed8;--shadow:0 12px 32px rgba(15,23,42,.12)}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#dbeafe,#f4f7fb 340px);color:var(--text)}
+.wrap{max-width:980px;margin:auto;padding:16px 14px 86px}.hero{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 2px}.brand{display:flex;gap:12px;align-items:center}.logo{width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#1d4ed8,#06b6d4);display:grid;place-items:center;color:white;font-weight:900;font-size:28px;box-shadow:var(--shadow)}h1{font-size:22px;margin:0}.sub{font-size:13px;color:#334155;margin-top:4px}.ver{font-size:12px;background:#0f172a;color:white;border-radius:999px;padding:6px 9px;white-space:nowrap}
+.card{background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.8);border-radius:22px;box-shadow:var(--shadow);padding:16px;margin:12px 0}.card h2{font-size:18px;margin:0 0 10px}.card h3{font-size:15px;margin:14px 0 8px}.muted{color:var(--muted);font-size:13px;line-height:1.55}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.list{display:grid;gap:10px}
+button,input,select{font:inherit}button{border:0;cursor:pointer}.primary{background:linear-gradient(135deg,#1d4ed8,#2563eb);color:white;border-radius:16px;padding:14px 16px;font-weight:900}.secondary{background:#e2e8f0;color:#0f172a;border-radius:14px;padding:12px 14px;font-weight:800}.ghost{background:#fff;border:1px solid var(--line);color:#0f172a;border-radius:14px;padding:11px 13px;font-weight:800}.danger{background:#fee2e2;color:#991b1b;border-radius:14px;padding:11px 13px;font-weight:800}.mini{background:#eef2ff;color:#1e3a8a;border-radius:11px;padding:8px 10px;font-size:12px;font-weight:900}
+input,select{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}label{font-size:13px;font-weight:800;color:#334155;display:block;margin-bottom:6px}.switch{display:flex;align-items:center;gap:8px}.switch input{width:auto;transform:scale(1.15)}
+.status{border:1px dashed #93c5fd;background:#eff6ff;border-radius:16px;padding:12px;line-height:1.55;margin-top:12px}.ok{background:#ecfdf5;border-color:#5eead4}.warn{background:#fffbeb;border-color:#fbbf24}.bad{background:#fef2f2;border-color:#fecaca}
+.poi{border:1px solid var(--line);border-radius:18px;background:#fff;padding:14px}.poiTop{display:flex;justify-content:space-between;gap:10px}.poiName{font-size:18px;font-weight:900}.pill,.chip{border-radius:999px;background:#f1f5f9;color:#475569;padding:5px 8px;font-size:12px}.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.chip.good{background:#ecfdf5;color:#115e59;border:1px solid #99f6e4}.btns{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:8px;margin-top:12px}.appBtn{background:#0f172a;color:#fff;border-radius:14px;padding:13px 12px;text-align:left;font-weight:900}.appBtn small{display:block;color:#cbd5e1;font-weight:600;margin-top:3px}
+.hidden{display:none!important}.nav{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.95);border-top:1px solid var(--line);backdrop-filter:blur(12px);display:flex;justify-content:center;gap:7px;padding:9px 8px env(safe-area-inset-bottom)}.nav button{border-radius:14px;background:#f1f5f9;color:#334155;padding:10px 12px;font-size:12px;font-weight:900}.nav button.active{background:#1d4ed8;color:white}.hist{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);border-radius:14px;background:#fff;padding:10px;margin-top:8px}.toast{position:fixed;left:50%;bottom:74px;transform:translateX(-50%);background:#111827;color:#fff;border-radius:999px;padding:12px 16px;box-shadow:var(--shadow);z-index:10;font-size:14px;max-width:92vw}.privacy{font-size:12px;line-height:1.65;background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:11px}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.locBox{border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px;margin-top:12px}.locGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}.locItem{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:9px}.locItem b{display:block;font-size:12px;color:#475569;margin-bottom:3px}.locVal{font-size:13px;line-height:1.45;word-break:break-word}
+@media(max-width:720px){.grid2,.locGrid{grid-template-columns:1fr}.hero{align-items:flex-start}.card{border-radius:18px}.ver{margin-top:4px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<section class="hero"><div class="brand"><div class="logo">P</div><div><h1>ポイントカードナビ</h1><div class="sub">起動時だけGPSを最大2回測定して、店を推定する</div></div></div><div class="ver">v1.0.4 無料版</div></section>
+
+<section id="pageHome" class="page">
+<div class="card">
+  <div class="row" style="justify-content:space-between;align-items:flex-start"><div><h2>現在地から店を判定</h2><div class="muted">Google APIキー不要。OpenStreetMap / Overpass APIで周辺店舗を無料検索します。</div></div></div>
+  <div class="grid2" style="margin-top:14px"><button class="primary" id="detect">GPSで今いる店を判定</button><button class="ghost" id="cacheBtn">直前の候補を表示</button></div>
+  <div id="status" class="status">起動時に1回だけ自動判定できます。GPS測定は最大2回までに制限しています。</div>
+  <div id="locInfo" class="locBox hidden"></div>
+  <div class="row" style="margin-top:12px"><label class="switch"><input type="checkbox" id="auto" checked>アプリ起動時に1回だけ自動判定</label><span class="pill" id="last">未判定</span></div>
+</div>
+<div class="card"><div class="row" style="justify-content:space-between"><h2>候補店舗</h2><button class="mini" id="clear">候補クリア</button></div><div id="results" class="list"><div class="muted">まだ候補はありません。</div></div></div>
+<div class="card"><h2>よく使うカード</h2><div id="quick" class="btns"></div></div>
+</section>
+
+<section id="pageManual" class="page hidden">
+<div class="card"><h2>手動で探す</h2><div class="grid2"><div><label>店舗名</label><input id="manualName" placeholder="例：ローソン、ウエルシア、イオン"></div><div><label>候補表示</label><button class="primary" id="manualBtn">カード候補を表示</button></div></div><div id="manualResult" class="list" style="margin-top:12px"></div></div>
+<div class="card"><h2>カードだけ開く</h2><div id="allCards" class="btns"></div></div>
+</section>
+
+<section id="pageHistory" class="page hidden">
+<div class="card"><div class="row" style="justify-content:space-between"><h2>学習・履歴</h2><button class="danger" id="reset">リセット</button></div><div class="muted">カードを開くと、その店で使ったカードとして端末内に保存します。</div><h3>最近使った組み合わせ</h3><div id="history"></div><h3>店舗別の優先カード</h3><div id="learn"></div></div>
+</section>
+
+<section id="pageSettings" class="page hidden">
+<div class="card"><h2>設定</h2><div class="grid2"><div><label>検索半径</label><select id="radius"><option value="50">50m：かなり狭め</option><option value="80" selected>80m：標準</option><option value="120">120m：広め</option><option value="200">200m：モール・駅前向け</option><option value="300">300m：大型施設向け</option><option value="500">500m：駅前・商業施設向け</option><option value="800">800m：広域候補</option><option value="1000">1000m：最大</option></select></div><div><label>候補表示数</label><select id="limit"><option value="5">5件</option><option value="8" selected>8件</option><option value="12">12件</option><option value="20">20件</option></select></div></div><div class="grid2" style="margin-top:12px"><div><label>Overpass API</label><input id="api" class="mono" value="https://overpass-api.de/api/interpreter"></div><div><label>現在地キャッシュ</label><select id="cacheMin"><option value="5">5分</option><option value="15" selected>15分</option><option value="30">30分</option></select></div></div><div class="grid2" style="margin-top:12px"><div><label>GPS取得方式</label><select id="locMode"><option value="two" selected>最大2回測定：良い方を採用</option><option value="single">1回だけ測定</option></select></div><div><label>精度の目安</label><div class="locItem"><div class="locVal">GPS測定は最大2回までです。2回取得できた場合は、GPS誤差が小さい方の地点を採用します。</div></div></div></div><div class="grid2" style="margin-top:12px"><div><label>店舗判定に使う最大GPS誤差</label><select id="targetAccuracy"><option value="30">30m：かなり厳しい</option><option value="50">50m：厳しめ</option><option value="100" selected>100m：推奨</option><option value="150">150m：やや緩め</option></select></div><div><label>精度不足時の動作</label><select id="strictAccuracy"><option value="stop" selected>100m以内でなければ検索しない</option><option value="warn">警告して検索する</option></select></div></div><div class="row" style="margin-top:12px"><label class="switch"><input type="checkbox" id="autoRadius" checked>GPS誤差が大きい時は検索半径を自動で広げる</label></div><div class="muted" style="margin-top:8px">例：GPS誤差が300m程度ある時は、設定半径より広い範囲で候補を探します。GPS測定は最大2回までで、2回のうち精度が良い地点を使います。</div><div style="margin-top:12px"><button class="secondary" id="save">設定を保存</button></div></div>
+<div class="card"><h2>自分用カードを追加</h2><div class="grid2"><div><label>表示名</label><input id="customName" placeholder="例：近所のスーパーアプリ"></div><div><label>URL / intent URI</label><input id="customUrl" placeholder="https://... または intent://..."></div></div><div style="margin-top:10px"><label>店舗名キーワード</label><input id="customPat" placeholder="例：スーパー名,系列名"></div><div class="row" style="margin-top:12px"><button class="primary" id="addCustom">追加</button><button class="danger" id="clearCustom">追加カードを全削除</button></div><div id="customList" style="margin-top:12px"></div></div>
+<div class="card"><h2>注意</h2><div class="privacy"><b>無料版：</b>Google Places APIは使わず、OpenStreetMap由来のOverpass APIで検索します。公共APIなので短時間の連打は避けてください。<br><b>精度：</b>無料データのため、店舗が出ない・モール内で候補が多い場合があります。手動検索と学習機能で補正してください。<br><b>GPS：</b>スマホで位置情報を使うには、GitHub PagesなどHTTPSで公開して開くのが基本です。<br><b>外部アプリ起動：</b>Android Chromeでは、ボタンを押した時だけURLまたはintentリンクで起動を試します。相手アプリが対応していない場合はWebページが開きます。</div></div>
+</section>
+</main>
+<nav class="nav"><button data-p="Home" class="active">判定</button><button data-p="Manual">手動</button><button data-p="History">履歴</button><button data-p="Settings">設定</button></nav>
+
+<script>
+(()=>{"use strict";
+const LS={set:"pcn_set_v1",learn:"pcn_learn_v1",hist:"pcn_hist_v1",cache:"pcn_cache_v1",custom:"pcn_custom_v1",loc:"pcn_loc_v1"};
+let set=load(LS.set,{radius:80,limit:8,api:"https://overpass-api.de/api/interpreter",auto:true,cacheMin:15,autoRadius:true,locMode:"two",targetAccuracy:100,strictAccuracy:"stop",v104TwoSampleProfile:true});
+if(!set.v104TwoSampleProfile){set.locMode="two";set.targetAccuracy=100;set.strictAccuracy="stop";set.v104TwoSampleProfile=true;save(LS.set,set)}
+let learn=load(LS.learn,{}), hist=load(LS.hist,[]), custom=load(LS.custom,[]);
+const baseCards=[
+{id:"dpoint",name:"dポイント",hint:"公式ページ/アプリへ",url:"https://dpoint.docomo.ne.jp/"},
+{id:"rakuten",name:"楽天ポイントカード",hint:"楽天ポイントカードへ",url:"https://pointcard.rakuten.co.jp/"},
+{id:"ponta",name:"Ponta",hint:"Pontaへ",url:"https://www.ponta.jp/"},
+{id:"vpoint",name:"Vポイント",hint:"Vポイントへ",url:"https://web.tsite.jp/"},
+{id:"waon",name:"WAON POINT",hint:"smart WAONへ",url:"https://www.smartwaon.com/"},
+{id:"iaeon",name:"iAEON",hint:"iAEONへ",url:"https://www.aeon.com/aeonapp/"},
+{id:"nanaco",name:"nanaco",hint:"nanacoへ",url:"https://www.nanaco-net.jp/"},
+{id:"seven",name:"セブンアプリ",hint:"公式ページへ",url:"https://www.sej.co.jp/products/app.html"},
+{id:"famipay",name:"ファミペイ",hint:"公式ページへ",url:"https://www.family.co.jp/services/smartphone/famipay.html"},
+{id:"lawson",name:"ローソンアプリ",hint:"公式ページへ",url:"https://www.lawson.co.jp/lab/app/"},
+{id:"matsukiyo",name:"マツキヨココカラ",hint:"公式ページへ",url:"https://www.matsukiyococokara-online.com/"},
+{id:"welcia",name:"ウエルシアアプリ",hint:"公式ページへ",url:"https://www.welcia-yakkyoku.co.jp/ja/service/app.html"},
+{id:"sugi",name:"スギ薬局アプリ",hint:"公式ページへ",url:"https://www.sugi-net.jp/sugi-app/"},
+{id:"tsuruha",name:"ツルハアプリ",hint:"公式ページへ",url:"https://www.tsuruha.co.jp/service/app/"},
+{id:"sundrug",name:"サンドラッグアプリ",hint:"公式ページへ",url:"https://www.sundrug.co.jp/service/app"},
+{id:"paypay",name:"PayPay",hint:"PayPayへ",url:"https://paypay.ne.jp/"}];
+const rules=[
+{p:["ローソン","lawson"],c:["ponta","dpoint","lawson","paypay"]},
+{p:["ファミリーマート","ファミマ","familymart"],c:["famipay","vpoint","rakuten","dpoint","paypay"]},
+{p:["セブン","7-eleven","seven"],c:["seven","nanaco","paypay"]},
+{p:["ウエルシア","welcia"],c:["welcia","vpoint","waon","paypay"]},
+{p:["マツモトキヨシ","マツキヨ"],c:["matsukiyo","dpoint","paypay"]},
+{p:["ココカラファイン"],c:["matsukiyo","dpoint","paypay"]},
+{p:["イオン","aeon","まいばすけっと","マックスバリュ","ダイエー"],c:["iaeon","waon","paypay"]},
+{p:["イトーヨーカドー","ヨークマート","ヨークフーズ","アリオ"],c:["seven","nanaco","paypay"]},
+{p:["スギ薬局","スギドラッグ"],c:["sugi","paypay"]},
+{p:["ツルハ","くすりの福太郎","ウェルネス","ウォンツ"],c:["tsuruha","rakuten","paypay"]},
+{p:["サンドラッグ"],c:["sundrug","paypay"]},
+{p:["すき家","はま寿司","なか卯","ココス","ビッグボーイ"],c:["rakuten","dpoint","ponta","paypay"]},
+{p:["吉野家"],c:["vpoint","paypay"]},
+{p:["ミスタードーナツ","ミスド"],c:["rakuten","dpoint","paypay"]},
+{p:["ガスト","バーミヤン","ジョナサン","しゃぶ葉","すかいらーく"],c:["vpoint","dpoint","rakuten","paypay"]}
+];
+const generic={convenience:["paypay","dpoint","rakuten","ponta","vpoint"],supermarket:["paypay","rakuten","dpoint","ponta","vpoint","waon"],pharmacy:["paypay","dpoint","rakuten","vpoint"],restaurant:["paypay","rakuten","dpoint","ponta","vpoint"],default:["paypay","dpoint","rakuten","ponta","vpoint"]};
+const $=q=>document.querySelector(q), $$=q=>[...document.querySelectorAll(q)];
+init();
+function init(){fillSettings(); bind(); renderCards(); renderHist(); renderCustom(); renderSavedLocation(); install(); if(set.auto)setTimeout(()=>detect(true),700)}
+function bind(){
+$("#detect").onclick=()=>detect(false); $("#cacheBtn").onclick=showCache; $("#clear").onclick=()=>$("#results").innerHTML='<div class="muted">候補をクリアしました。</div>';
+$("#auto").onchange=e=>{set.auto=e.target.checked; save(LS.set,set); toast(set.auto?"起動時判定ON":"起動時判定OFF")};
+$("#manualBtn").onclick=manual; $("#manualName").onkeydown=e=>{if(e.key==="Enter")manual()};
+$("#reset").onclick=()=>{if(confirm("学習・履歴をリセットしますか？")){learn={};hist=[];localStorage.removeItem(LS.learn);localStorage.removeItem(LS.hist);renderHist();toast("リセットしました")}};
+$("#save").onclick=()=>{readSettings();save(LS.set,set);toast("保存しました")};
+$("#addCustom").onclick=addCustom; $("#clearCustom").onclick=()=>{if(confirm("追加カードを全削除しますか？")){custom=[];save(LS.custom,custom);renderCustom();renderCards();toast("削除しました")}};
+$$(".nav button").forEach(b=>b.onclick=()=>nav(b.dataset.p));
+}
+function nav(p){$$(".page").forEach(x=>x.classList.add("hidden"));$("#page"+p).classList.remove("hidden");$$(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.p===p));if(p==="History")renderHist()}
+async function detect(auto=false){
+if(!navigator.geolocation)return status("このブラウザは位置情報に対応していません。","bad");
+if(!window.isSecureContext && location.protocol!=="file:")return status("位置情報はHTTPS環境で使う必要があります。GitHub Pagesなどで開いてください。","bad");
+try{
+ status(auto?"起動時の現在地を取得中…最大2回測定します。":"現在地を取得中…最大2回測定します。");
+ const pos=await position(); const lat=pos.coords.latitude, lon=pos.coords.longitude, acc=Math.round(pos.coords.accuracy||0), at=Date.now();
+ const effectiveRadius=calcRadius(acc); $("#last").textContent=new Date(at).toLocaleString("ja-JP");
+ const targetAcc=Number(set.targetAccuracy||100), strictAcc=set.strictAccuracy||"stop";
+ const loc={lat,lon,accuracy:acc,at,radius:set.radius,effectiveRadius,address:"住所を取得中…",samples:pos._samples||1,elapsedMs:pos._elapsedMs||0,locMode:set.locMode||"two",targetAccuracy:targetAcc,strictAccuracy:strictAcc}; save(LS.loc,loc); renderLocation(loc);
+ fetchAddress(lat,lon).then(address=>{const latest=load(LS.loc,null); if(latest&&Math.abs(latest.lat-lat)<0.000001&&Math.abs(latest.lon-lon)<0.000001){latest.address=address||"住所は取得できませんでした"; save(LS.loc,latest); renderLocation(latest)}}).catch(()=>{const latest=load(LS.loc,null); if(latest){latest.address="住所は取得できませんでした"; save(LS.loc,latest); renderLocation(latest)}});
+ const advice=accuracyAdvice(acc);
+ if(acc>targetAcc && strictAcc==="stop"){
+  renderAccuracyStop(lat,lon,acc,targetAcc,pos._samples||1,pos._elapsedMs||0);
+  return status(`GPS誤差が約${acc}mのため、店舗検索を停止しました。最大許容は${targetAcc}mです。GPS測定は最大2回までです。Androidの位置情報を「正確」にし、Wi‑FiをON、Google位置情報の精度/スキャン設定を確認して再試行してください。`,"bad")
+ }
+ const cached=getCache(lat,lon); if(cached){renderResults(cached.items,{lat,lon});return status("直近の同じ場所の候補を表示しました。最新のGPS地点は上に表示しています。","ok")}
+ status(`現在地取得OK。GPS誤差 約${acc}m。設定半径${set.radius}m / 実検索半径${effectiveRadius}mで店舗検索中…${advice.short}`);
+ const pois=rank(await fetchPois(lat,lon,effectiveRadius),lat,lon).slice(0,set.limit); save(LS.cache,{lat,lon,items:pois,at:Date.now(),accuracy:acc,effectiveRadius,samples:pos._samples||1,elapsedMs:pos._elapsedMs||0});
+ renderResults(pois,{lat,lon}); status(pois.length?`${pois.length}件の候補を表示しました。GPS誤差は約${acc}mです。${advice.long}`:`周辺店舗が見つかりませんでした。GPS誤差は約${acc}mです。検索半径を広げるか、手動検索を使ってください。${advice.long}`,pois.length?(acc>120?"warn":"ok"):"warn");
+}catch(e){console.error(e); let m=e.message||String(e); if(e.code===1)m="位置情報の許可が必要です。Androidの設定でChrome/このアプリの位置情報を『正確』にしてください。"; if(e.code===2)m="現在地を取得できませんでした。屋外・窓際で再試行、Wi‑Fi ON、端末の位置情報ONを確認してください。"; if(e.code===3)m="現在地取得がタイムアウトしました。測定は最大2回までです。屋外・窓際で再試行してください。"; status(m,"bad")}
+}
+function singlePosition(timeout=12000){return new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(p=>res(p),rej,{enableHighAccuracy:true,timeout,maximumAge:0}))}
+async function position(){
+ const mode=set.locMode||"two";
+ const started=Date.now();
+ const positions=[];
+ const tryOne=async(n)=>{
+  status(`${n}回目のGPS測定中…最大2回まで測定します。`);
+  const p=await singlePosition(n===1?12000:10000);
+  positions.push(p);
+  const acc=Math.round(Number(p.coords.accuracy||0));
+  status(`${n}回目のGPS取得完了。GPS誤差 約${acc}m。${mode==="two"&&n===1?"2回目を測定します…":""}`);
+ };
+ await tryOne(1);
+ if(mode==="two"){
+  try{await tryOne(2)}catch(e){console.warn("second location failed",e)}
+ }
+ let best=positions[0];
+ for(const p of positions){
+  if(Number(p.coords.accuracy||Infinity)<Number(best.coords.accuracy||Infinity))best=p;
+ }
+ best._samples=positions.length;
+ best._elapsedMs=Date.now()-started;
+ return best;
+}
+async function fetchPois(lat,lon,r){
+const q=`[out:json][timeout:12];(node(around:${r},${lat},${lon})[shop];way(around:${r},${lat},${lon})[shop];relation(around:${r},${lat},${lon})[shop];node(around:${r},${lat},${lon})[amenity~"^(restaurant|fast_food|cafe|pharmacy|fuel|food_court)$"];way(around:${r},${lat},${lon})[amenity~"^(restaurant|fast_food|cafe|pharmacy|fuel|food_court)$"];relation(around:${r},${lat},${lon})[amenity~"^(restaurant|fast_food|cafe|pharmacy|fuel|food_court)$"];node(around:${r},${lat},${lon})[brand];way(around:${r},${lat},${lon})[brand];);out center tags ${Math.max(40,set.limit*4)};`;
+const res=await fetch(set.api,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},body:"data="+encodeURIComponent(q)});
+if(!res.ok)throw new Error("店舗検索APIエラー HTTP "+res.status);
+const data=await res.json();
+return (data.elements||[]).map(el=>{const t=el.tags||{}, la=el.lat||(el.center&&el.center.lat), lo=el.lon||(el.center&&el.center.lon), name=t["name:ja"]||t.name||t.brand||t.operator||t.shop||t.amenity||"名称不明";return{id:`${el.type}/${el.id}`,name,lat:la,lon:lo,tags:t}}).filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon));
+}
+function rank(pois,lat,lon){
+const map=new Map(); pois.forEach(p=>{const k=norm(p.name)+"|"+Math.round(p.lat*10000)+"|"+Math.round(p.lon*10000); if(!map.has(k))map.set(k,p)});
+return [...map.values()].map(p=>{p.distance=dist(lat,lon,p.lat,p.lon);p.type=type(p.tags);p.cards=cardsFor(p.name,p.type);p.score=1000-Math.min(900,p.distance*8)+(learn[norm(p.name)]?180:0)+(p.tags.brand?60:0)+(p.cards.length?70:0);return p}).sort((a,b)=>b.score-a.score||a.distance-b.distance);
+}
+function type(t){if(t.shop==="convenience")return"convenience"; if(["supermarket","department_store","mall"].includes(t.shop))return"supermarket"; if(["chemist","pharmacy","cosmetics"].includes(t.shop)||t.amenity==="pharmacy")return"pharmacy"; if(["restaurant","fast_food","cafe"].includes(t.amenity))return"restaurant"; return "default"}
+function cardsFor(name,type){const n=norm(name);let ids=[]; if(learn[n])ids.push(learn[n].cardId); custom.forEach(c=>{if((c.patterns||[]).some(p=>n.includes(norm(p))))ids.push(c.id)}); rules.forEach(r=>{if(r.p.some(p=>n.includes(norm(p))))ids.push(...r.c)}); if(!ids.length)ids.push(...(generic[type]||generic.default)); return [...new Set(ids)].filter(Boolean).slice(0,6)}
+function renderAccuracyStop(lat,lon,acc,target,samples,elapsedMs){$("#results").innerHTML=`<div class="poi"><b>GPS精度不足のため店舗検索を止めました。</b><div class="muted">現在のGPS誤差は約${Math.round(acc)}mです。設定上限は${Math.round(target)}mなので、このまま検索すると1km以上違う店を候補にする可能性があります。</div><div class="chips"><span class="chip">取得回数：${samples}回</span><span class="chip">測定：約${Math.round((elapsedMs||0)/100)/10}秒</span><span class="chip">最大許容：${target}m</span></div><div class="muted" style="margin-top:10px">対策：Androidの位置情報権限を「正確」にする / Wi‑FiをON / Google位置情報の精度とWi‑Fi・BluetoothスキャンをON / 店舗入口や窓際で再試行 / Googleマップで現在地が安定してから再判定。</div><p><a target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=19/${lat}/${lon}">取得されたGPS地点を地図で確認</a></p></div>`; attach($("#results"))}
+function renderResults(items,loc){$("#results").innerHTML=items.length?items.map((p,i)=>poiHtml(p,i)).join(""):`<div class="poi"><b>候補が見つかりませんでした。</b><div class="muted">検索半径を広げるか、手動検索を使ってください。</div>${loc?`<p><a target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat=${loc.lat}&mlon=${loc.lon}#map=19/${loc.lat}/${loc.lon}">GPS取得地点を地図で確認</a></p>`:""}</div>`; attach($("#results"))}
+function poiHtml(p,i){const l=learn[norm(p.name)], chips=[`${Math.round(p.distance||0)}m`,labelType(p.type)];return `<article class="poi"><div class="poiTop"><div><div class="poiName">${i===0?"📍 ":""}${esc(p.name)}</div><div class="muted">${esc(p.tags["addr:street"]||"")}</div></div><span class="pill">候補${i+1}</span></div><div class="chips">${chips.map(c=>`<span class="chip">${esc(c)}</span>`).join("")}${l?`<span class="chip good">前回：${esc(card(l.cardId)?.name||l.cardId)}</span>`:""}</div><div class="btns">${p.cards.map(id=>btn(id,p.name)).join("")}</div><div class="row" style="margin-top:10px"><button class="mini" data-copy="${escA(p.name)}">店名コピー</button>${p.lat?`<button class="mini" data-map="${p.lat},${p.lon}">地図で見る</button>`:""}</div></article>`}
+function manual(){const name=$("#manualName").value.trim(); if(!name)return toast("店舗名を入力してください"); const p={name,distance:0,type:"default",tags:{},cards:cardsFor(name,"default")}; $("#manualResult").innerHTML=poiHtml(p,0); attach($("#manualResult"))}
+function renderCards(){const quick=["dpoint","rakuten","ponta","vpoint","waon","iaeon","nanaco","paypay",...custom.map(c=>c.id)]; $("#quick").innerHTML=[...new Set(quick)].map(id=>btn(id,"手動")).join(""); $("#allCards").innerHTML=allCards().map(c=>btn(c.id,"手動")).join(""); attach($("#quick")); attach($("#allCards"))}
+function btn(id,store){const c=card(id);return c?`<button class="appBtn" data-card="${escA(c.id)}" data-store="${escA(store)}">${esc(c.name)}<small>${esc(c.hint||"開く")}</small></button>`:""}
+function attach(root){root.querySelectorAll("[data-card]").forEach(b=>b.onclick=()=>openCard(b.dataset.card,b.dataset.store||"手動")); root.querySelectorAll("[data-copy]").forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.copy);toast("店名をコピーしました")}catch{toast("コピーできませんでした")}}); root.querySelectorAll("[data-map]").forEach(b=>b.onclick=()=>{const [lat,lon]=b.dataset.map.split(","); window.open(`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=19/${lat}/${lon}`,"_blank","noopener")})}
+function openCard(id,store){const c=card(id); if(!c)return; if(store&&store!=="手動"){learn[norm(store)]={storeName:store,cardId:id,cardName:c.name,updatedAt:Date.now()}; save(LS.learn,learn)} hist.unshift({storeName:store,cardId:id,cardName:c.name,at:Date.now()}); hist=hist.slice(0,30); save(LS.hist,hist); renderHist(); toast(c.name+"を開きます"); setTimeout(()=>location.href=c.url,120)}
+function renderHist(){const h=$("#history"), l=$("#learn"); h.innerHTML=hist.length?hist.slice(0,10).map(x=>`<div class="hist"><div><b>${esc(x.cardName)}</b><div class="muted">${esc(x.storeName)} / ${new Date(x.at).toLocaleString("ja-JP")}</div></div><button class="mini" data-card="${escA(x.cardId)}" data-store="${escA(x.storeName)}">開く</button></div>`).join(""):'<div class="muted">履歴はまだありません。</div>'; l.innerHTML=Object.values(learn).length?Object.values(learn).sort((a,b)=>b.updatedAt-a.updatedAt).map(x=>`<div class="hist"><div><b>${esc(x.storeName)}</b><div class="muted">優先：${esc(x.cardName)}</div></div><button class="mini" data-card="${escA(x.cardId)}" data-store="${escA(x.storeName)}">開く</button></div>`).join(""):'<div class="muted">学習データはまだありません。</div>'; attach(h);attach(l)}
+function addCustom(){const name=$("#customName").value.trim(), url=$("#customUrl").value.trim(), pat=$("#customPat").value.trim(); if(!name||!url)return toast("表示名とURLを入力してください"); custom.push({id:"custom_"+Date.now(),name,hint:"自分用",url,patterns:pat?pat.split(",").map(x=>x.trim()).filter(Boolean):[name]}); save(LS.custom,custom); $("#customName").value=$("#customUrl").value=$("#customPat").value=""; renderCustom(); renderCards(); toast("追加しました")}
+function renderCustom(){const box=$("#customList"); box.innerHTML=custom.length?custom.map(c=>`<div class="hist"><div><b>${esc(c.name)}</b><div class="muted">${esc((c.patterns||[]).join(", "))}</div></div><button class="mini" data-card="${escA(c.id)}" data-store="手動">開く</button></div>`).join(""):'<div class="muted">追加カードはありません。</div>'; attach(box)}
+function fillSettings(){if(![50,80,120,200,300,500,800,1000].includes(Number(set.radius)))set.radius=80; if(![5,8,12,20].includes(Number(set.limit)))set.limit=8; if(!["single","two"].includes(set.locMode))set.locMode="two"; if(![30,50,100,150].includes(Number(set.targetAccuracy)))set.targetAccuracy=100; if(!["stop","warn"].includes(set.strictAccuracy))set.strictAccuracy="stop"; $("#radius").value=set.radius;$("#limit").value=set.limit;$("#api").value=set.api;$("#auto").checked=set.auto!==false;$("#cacheMin").value=set.cacheMin;$("#autoRadius").checked=set.autoRadius!==false;$("#locMode").value=set.locMode;$("#targetAccuracy").value=set.targetAccuracy;$("#strictAccuracy").value=set.strictAccuracy}
+function readSettings(){set.radius=Number($("#radius").value);set.limit=Number($("#limit").value);set.api=$("#api").value.trim()||"https://overpass-api.de/api/interpreter";set.auto=$("#auto").checked;set.cacheMin=Number($("#cacheMin").value);set.autoRadius=$("#autoRadius").checked;set.locMode=$("#locMode").value||"two";set.targetAccuracy=Number($("#targetAccuracy").value||100);set.strictAccuracy=$("#strictAccuracy").value||"stop";set.v104TwoSampleProfile=true}
+function getCache(lat,lon){const c=load(LS.cache,null); if(!c)return null; const threshold=Math.min(160,Math.max(35,Number(set.radius||80)/4)); return ((Date.now()-c.at)/60000<=set.cacheMin && dist(lat,lon,c.lat,c.lon)<threshold)?c:null}
+function calcRadius(accuracy){const base=Number(set.radius||80); if(set.autoRadius===false||!Number.isFinite(accuracy)||accuracy<=0)return base; return Math.min(1500,Math.max(base,Math.ceil(accuracy*1.5/10)*10))}
+function renderSavedLocation(){const loc=load(LS.loc,null); if(loc)renderLocation(loc)}
+function renderLocation(loc){const box=$("#locInfo"); if(!box)return; box.classList.remove("hidden"); const lat=Number(loc.lat), lon=Number(loc.lon), acc=Number(loc.accuracy||0), at=loc.at?new Date(loc.at).toLocaleString("ja-JP"):"不明", radius=loc.effectiveRadius||loc.radius||set.radius, samples=loc.samples||1, elapsed=loc.elapsedMs?Math.round(loc.elapsedMs/100)/10:0, modeName={single:"1回だけ測定",two:"最大2回測定"}[loc.locMode||set.locMode]||"最大2回測定", advice=accuracyAdvice(acc), target=Number(loc.targetAccuracy||set.targetAccuracy||100); box.innerHTML=`<b>GPS取得地点</b><div class="locGrid"><div class="locItem"><b>推定住所</b><div class="locVal">${esc(loc.address||"住所は未取得です")}</div></div><div class="locItem"><b>取得時刻</b><div class="locVal">${esc(at)}</div></div><div class="locItem"><b>緯度・経度</b><div class="locVal mono">${lat.toFixed(6)}, ${lon.toFixed(6)}</div></div><div class="locItem"><b>GPS誤差 / 検索半径</b><div class="locVal">約${Math.round(acc)}m / ${Math.round(radius)}m<br>店舗判定上限：${target}m</div></div><div class="locItem"><b>測定方式</b><div class="locVal">${esc(modeName)} / ${samples}回取得（上限2回） / 約${elapsed}秒</div></div><div class="locItem"><b>精度メモ</b><div class="locVal">${esc(advice.long)}</div></div></div><div class="row" style="margin-top:10px"><button class="mini" data-map="${lat},${lon}">GPS地点を地図で見る</button><button class="mini" data-copy="${lat.toFixed(6)}, ${lon.toFixed(6)}">座標コピー</button></div>`; attach(box)}
+async function fetchAddress(lat,lon){const ctrl=new AbortController(); const timer=setTimeout(()=>ctrl.abort(),4500); try{const url=`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&zoom=18&addressdetails=1`; const res=await fetch(url,{signal:ctrl.signal,headers:{"Accept":"application/json"}}); if(!res.ok)return "住所は取得できませんでした"; const data=await res.json(); return data.display_name||"住所は取得できませんでした"}finally{clearTimeout(timer)}}
+function showCache(){const c=load(LS.cache,null); if(c&&c.items){renderResults(c.items,{lat:c.lat,lon:c.lon});status("直前の候補を表示しました。","ok")}else toast("直前の候補がありません")}
+function install(){let d=null; addEventListener("beforeinstallprompt",e=>{e.preventDefault();d=e;$("#install").hidden=false}); $("#install").onclick=async()=>{if(d){d.prompt(); await d.userChoice; d=null; $("#install").hidden=true}}}
+function sw(){}
+function card(id){return allCards().find(c=>c.id===id)} function allCards(){return [...baseCards,...custom]}
+function labelType(t){return {convenience:"コンビニ",supermarket:"スーパー/商業施設",pharmacy:"ドラッグストア",restaurant:"飲食店",default:"周辺店舗"}[t]||t}
+function accuracyAdvice(acc){acc=Number(acc||0); if(!acc)return{short:"",long:"精度不明です。"}; if(acc<=30)return{short:"",long:"かなり良好です。"}; if(acc<=80)return{short:"",long:"実用範囲です。店内・駅ビルでは候補一覧から選んでください。"}; if(acc<=150)return{short:" GPS誤差が大きめです。",long:"GPS誤差が大きめです。100m上限設定では店舗検索を止める場合があります。屋内ならWi‑FiをON、Android設定で正確な位置情報を許可すると改善することがあります。"}; return{short:" GPS誤差がかなり大きいです。",long:"GPS誤差がかなり大きいです。1kmズレを防ぐため、この状態では店舗検索しない設定を推奨します。Googleマップを一度開いて現在地を安定させる、屋外/窓際で再試行、Wi‑Fi ON、位置情報権限の『正確』を確認してください。"}}
+function status(m,k=""){const el=$("#status");el.textContent=m;el.className="status "+k}
+function toast(m){document.querySelector(".toast")?.remove();const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2400)}
+function dist(a,b,c,d){const R=6371000,to=x=>x*Math.PI/180,dl=to(c-a),dn=to(d-b),x=Math.sin(dl/2)**2+Math.cos(to(a))*Math.cos(to(c))*Math.sin(dn/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
+function norm(s){return String(s||"").toLowerCase().normalize("NFKC").replace(/[\s\-ー・･\.]/g,"")} function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))} function escA(s){return esc(s).replace(/`/g,"&#96;")}
+function load(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):JSON.parse(JSON.stringify(f))}catch{return JSON.parse(JSON.stringify(f))}} function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
+})();
+</script>
+</body></html>
